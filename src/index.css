@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- Base ---------- */
+@layer base {
+  html { background: #050505; color-scheme: dark; }
+  body {
+    @apply bg-void text-bone font-sans antialiased;
+    overflow-x: hidden;
+  }
+  ::selection { background: #e10600; color: #fff; }
+  :focus-visible { outline: 2px solid #e10600; outline-offset: 3px; border-radius: 2px; }
+  h1, h2, h3 { @apply font-display; }
+  input, select, textarea, button { font: inherit; }
+  /* Range sliders */
+  input[type='range'] { accent-color: #e10600; }
+  /* Thin scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #050505; }
+  ::-webkit-scrollbar-thumb { background: #1f2023; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #e10600; }
+}
+
+/* ---------- Components ---------- */
+@layer components {
+  .container-v { @apply mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12; }
+
+  .eyebrow { @apply font-mono text-[11px] uppercase tracking-ultra text-chrome; }
+  .eyebrow-red { @apply font-mono text-[11px] uppercase tracking-ultra text-racing; }
+
+  .btn {
+    @apply relative inline-flex items-center justify-center gap-3 overflow-hidden px-7 py-4
+      font-mono text-[11px] uppercase tracking-[0.28em] transition-colors duration-300;
+  }
+  .btn-primary { @apply btn bg-racing text-white hover:bg-racing-glow; }
+  .btn-ghost { @apply btn border border-white/20 text-bone hover:border-white/60; }
+  .btn-sm { @apply px-4 py-2.5 text-[10px]; }
+
+  .card { @apply relative border border-white/[0.06] bg-graphite; }
+
+  .chip {
+    @apply inline-flex items-center gap-2 border border-white/10 px-3 py-1.5 font-mono text-[10px]
+      uppercase tracking-[0.2em] text-silver transition-colors hover:border-white/40;
+  }
+  .chip-active { @apply border-racing bg-racing/10 text-bone; }
+
+  .field {
+    @apply w-full border border-white/10 bg-carbon px-4 py-3 text-sm text-bone placeholder:text-chrome/70
+      focus:border-racing focus:outline-none;
+  }
+
+  .stat-num { @apply font-display text-4xl font-semibold tabular-nums tracking-tight sm:text-5xl; }
+
+  /* A hairline with a red tick at the start */
+  .rule { @apply relative h-px w-full bg-white/10; }
+  .rule::before { content: ''; @apply absolute left-0 top-0 h-px w-10 bg-racing; }
+}
+
+/* ---------- Effects ---------- */
+
+/* Film grain overlay (pure CSS, no images). */
+.grain {
+  pointer-events: none;
+  position: fixed;
+  inset: -50%;
+  z-index: 60;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 0.9s steps(6) infinite;
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -3%); }
+  60% { transform: translate(-2%, -1%); }
+  80% { transform: translate(3%, 3%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Cinematic letterbox vignette */
+.vignette {
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(0, 0, 0, 0.85) 100%);
+}
+
+/* Headline mask reveal helpers (GSAP animates the inner span) */
+.mask { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.06em; }
+.mask > span { display: inline-block; will-change: transform; }
+
+/* Outline text */
+.text-outline { color: transparent; -webkit-text-stroke: 1px rgba(242, 240, 236, 0.35); }
+
+/* Light-sweep across an element on hover */
+.sweep { position: relative; overflow: hidden; }
+.sweep::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.12) 50%, transparent 65%);
+  transform: translateX(-120%);
+  transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1);
+  pointer-events: none;
+}
+.sweep:hover::after { transform: translateX(120%); }
+
+/* Speed lines used in the hero */
+.speedlines {
+  background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 120px);
+}
+
+/* Reduced motion: switch off decorative loops */
+@media (prefers-reduced-motion: reduce) {
+  .grain, .animate-marquee, .animate-scan, .animate-pulseRed { animation: none !important; }
+  .sweep::after { display: none; }
+  html { scroll-behavior: auto !important; }
+}
+
+/* Hide the system cursor while the custom reticle cursor is active (mouse devices only) */
+.cursor-none-all, .cursor-none-all * { cursor: none !important; }
